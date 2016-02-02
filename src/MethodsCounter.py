@@ -150,15 +150,24 @@ def countMethods(srcPathList):
                 srcCountList.append((fileRelativePath, lineCount, classCount, methodCount))
     return srcCountList
 
-def getReadableTime():
-    curTime = time.localtime()
+def getReadableTime1(curTime):
     year = curTime[0]
     month = curTime[1]
     day = curTime[2]
     hour = curTime[3]
     minute = curTime[4]
     second = curTime[5]
-    readableTime = '%d-%d-%d %d:%d:%d' % (year, month, day, hour, minute, second)
+    readableTime = '%d%02d%02d_%02d%02d%02d' % (year, month, day, hour, minute, second)
+    return readableTime
+
+def getReadableTime2(curTime):
+    year = curTime[0]
+    month = curTime[1]
+    day = curTime[2]
+    hour = curTime[3]
+    minute = curTime[4]
+    second = curTime[5]
+    readableTime = '%d-%02d-%02d %02d:%02d:%02d' % (year, month, day, hour, minute, second)
     return readableTime
 
 def process():
@@ -210,23 +219,17 @@ def process():
     logContent.append('Total Method Count: %d' % totalMethodCount)
 
 def saveToLog():
-    logFile = 'AndroidMethodsCounter.log'
-    # log file exists and not empty, open file with append mode
-    if os.path.exists(logFile) and os.path.getsize(logFile) != 0:
-        logFp = open(logFile, 'a+')
-        logFp.write('\n')   # 追加模式下需要一个额外的换行，和上方的log分隔开
-        logFp.writelines([i + '\n' for i in logContent])
-    # log file does not exist or empty, open file with write mode
-    else:
-        logFp = open(logFile, 'w+')
-        logFp.writelines([i + '\n' for i in logContent])
+    curTime = time.localtime()
+    logFile = 'Count_' + getReadableTime1(curTime) + '.log'
+    logFp = open(logFile, 'w+')
+    logFp.write('------------------------------ ' + getReadableTime2(curTime) + ' ------------------------------\n')
+    logFp.writelines([i + '\n' for i in logContent])
     logFp.close()
 
 if __name__ == '__main__':
     logContent = []
     try:
         # start clean process
-        logContent.append('------------------------------ ' + getReadableTime() + ' ------------------------------')
         process()
     except Exception, e:
         # append the exception message to log
