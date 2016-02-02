@@ -17,5 +17,5 @@ The "ShowSingleFile" option controls whether single file statistics is shown or 
 After configured finished, run the MethodsCounter.py and you will get log to show the statistics.
 
 ## Attentions
-The counted number of methods may be not entirely accurate. You should not rely on this tool in academic or commercial applications. In most cases, it works fine. But in some special cases, the count may be more or less than the actual count.
+The counted number of methods may be not entirely accurate. You should not rely on this tool at academic or commercial scenes. In most cases, it works fine. But in some special cases, the count may be more or less than the actual count.
 This is because the AndroidMethodsCounter is a lightweight tool. We do not use the lexical analysis for the java codes. Only some string regulations are applied for detection of comments, classes and methods. It cannot be entirely accurate.
