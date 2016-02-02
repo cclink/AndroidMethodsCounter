@@ -113,7 +113,30 @@ def countMethods(srcPathList):
                 currentBraceCount = 0
                 classCount = 0
                 methodCount = 0
+                isInMultiComment = False
                 for fileLine in fileContent:
+                    stripedLine = fileLine.strip()
+                    if isInMultiComment:
+                        endComment = stripedLine.rfind('*/')
+                        if endComment == -1:
+                            continue
+                        else:
+                            isInMultiComment = False
+                            fileLine = stripedLine[endComment+2:]
+                            if fileLine == '':
+                                continue
+                    else:
+                        if stripedLine.startswith('//'):
+                            continue
+                        if stripedLine.startswith('/*'):
+                            endComment = stripedLine.rfind('*/')
+                            if endComment == -1:
+                                isInMultiComment = True
+                                continue
+                            else:
+                                fileLine = stripedLine[endComment+2:]
+                                if fileLine == '':
+                                    continue
                     ret = classLineRegex.search(fileLine)
                     while ret:
                         group0 = ret.group(0)
