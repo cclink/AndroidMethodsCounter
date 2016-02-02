@@ -167,7 +167,14 @@ def process():
         return
     # Get the configurations
     projectDir = configParser.get('Dir', 'ProjectDir')
-
+    isShowSingleFile = configParser.get('MethodsCounter', 'ShowSingleFile')
+    isShowSingleFile = isShowSingleFile.lower()
+    if isShowSingleFile == 'true':
+        isShowSingleFile = True
+    elif isShowSingleFile == 'false':
+        isShowSingleFile = False
+    else:
+        raise RuntimeError('Invalid ShowSingleFile parameter')
     # project dir is not exist, raise exception
     if not os.path.exists(projectDir):
         raise RuntimeError('Invalid project directory')
@@ -192,7 +199,8 @@ def process():
     totalClassCount = 0
     totalMethodCount = 0
     for (srcFile, lineCount, classCount, methodCount) in srcCountList:
-        logContent.append('%s: %d %d %d' % (srcFile, lineCount, classCount, methodCount))
+        if isShowSingleFile:
+            logContent.append('%s: %d %d %d' % (srcFile, lineCount, classCount, methodCount))
         totalLineCount += lineCount
         totalClassCount += classCount
         totalMethodCount += methodCount
