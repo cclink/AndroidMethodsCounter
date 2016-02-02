@@ -100,7 +100,7 @@ def countMethods(srcPathList):
     for srcPath in srcPathList:
         for (parent, _, fileNames) in os.walk(srcPath):
             for fileName in fileNames:
-                # Ignore non java code
+                # ignores non java code
                 if not fileName.endswith('.java'):
                     continue
                 # read java code to find used resource
@@ -108,6 +108,7 @@ def countMethods(srcPathList):
                 fp = open(fileFullPath, 'r')
                 fileContent = fp.readlines()
                 fp.close()
+                lineCount = len(fileContent)
                 braceStack = []
                 currentBraceCount = 0
                 methodCount = 0
@@ -144,7 +145,7 @@ def countMethods(srcPathList):
                                 if len(braceStack) != 0:
                                     currentBraceCount = braceStack.pop()
                 fileRelativePath = fileFullPath[len(srcPath):]
-                srcCountList.append((fileRelativePath, methodCount))
+                srcCountList.append((fileRelativePath, lineCount, methodCount))
     return srcCountList
 
 def getReadableTime():
@@ -185,12 +186,15 @@ def process():
 
     # get configed resource
     srcCountList = countMethods(srcPathList)
-    totalCount = 0;
-    for (srcFile, srcCount) in srcCountList:
-        logContent.append('%s: %d' % (srcFile, srcCount))
-        totalCount += srcCount
-    logContent.append('File Total Count: %d' % len(srcCountList))
-    logContent.append('Method Total Count: %d' % totalCount)
+    totalLineCount = 0
+    totalSrcCount = 0
+    for (srcFile, lineCount, srcCount) in srcCountList:
+        logContent.append('%s: %d %d' % (srcFile, lineCount, srcCount))
+        totalLineCount += lineCount
+        totalSrcCount += srcCount
+    logContent.append('Total File Count: %d' % len(srcCountList))
+    logContent.append('Total Line Count: %d' % totalLineCount)
+    logContent.append('Total Method Count: %d' % totalSrcCount)
 
 def saveToLog():
     logFile = 'AndroidMethodsCounter.log'
