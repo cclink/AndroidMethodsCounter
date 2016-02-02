@@ -120,7 +120,25 @@ def countMethods(srcPathList):
                         group0Pos = fileLine.find(group0)
                         group0Left = fileLine[0:group0Pos]
                         group0Right = fileLine[group0Pos+len(group0):]
-                        for ch in group0Left:
+                        if currentBraceCount != 0:
+                            for ch in group0Left:
+                                if ch == '{':
+                                    currentBraceCount += 1
+                                elif ch == '}':
+                                    currentBraceCount -= 1
+                                    if currentBraceCount == 1:
+                                        methodCount += 1
+                                    elif currentBraceCount == 0:
+                                        if len(braceStack) != 0:
+                                            currentBraceCount = braceStack.pop()
+                        fileLine = group0Right
+                        ret = classLineRegex.search(fileLine)
+                        if currentBraceCount != 0:
+                            braceStack.append(currentBraceCount)
+                        currentBraceCount = 1
+                        classCount += 1
+                    if currentBraceCount != 0:
+                        for ch in fileLine:
                             if ch == '{':
                                 currentBraceCount += 1
                             elif ch == '}':
@@ -130,22 +148,6 @@ def countMethods(srcPathList):
                                 elif currentBraceCount == 0:
                                     if len(braceStack) != 0:
                                         currentBraceCount = braceStack.pop()
-                        fileLine = group0Right
-                        ret = classLineRegex.search(fileLine)
-                        if currentBraceCount != 0:
-                            braceStack.append(currentBraceCount)
-                        currentBraceCount = 1
-                        classCount += 1
-                    for ch in fileLine:
-                        if ch == '{':
-                            currentBraceCount += 1
-                        elif ch == '}':
-                            currentBraceCount -= 1
-                            if currentBraceCount == 1:
-                                methodCount += 1
-                            elif currentBraceCount == 0:
-                                if len(braceStack) != 0:
-                                    currentBraceCount = braceStack.pop()
                 fileRelativePath = fileFullPath[len(srcPath):]
                 srcCountList.append((fileRelativePath, lineCount, classCount, methodCount))
     return srcCountList
