@@ -16,7 +16,7 @@ The "ShowSingleFile" option controls whether single file statistics is shown or 
 
 After configured, run the MethodsCounter.py and you will get log to show the statistics.
 
-![image](https://github.com/cclink/AndroidMethodsCounter/blob/master/img/Image%20239.png)
+![image](https://github.com/cclink/AndroidMethodsCounter/blob/master/img/Image239.png)
 
 ## Attentions
 The counted number of methods may be not entirely accurate. You should not rely on this tool at academic or commercial scenes. In most cases, it works fine. But in some special cases, the count may be more or less than the actual count.
