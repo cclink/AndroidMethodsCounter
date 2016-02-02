@@ -111,6 +111,7 @@ def countMethods(srcPathList):
                 lineCount = len(fileContent)
                 braceStack = []
                 currentBraceCount = 0
+                classCount = 0
                 methodCount = 0
                 for fileLine in fileContent:
                     ret = classLineRegex.search(fileLine)
@@ -134,6 +135,7 @@ def countMethods(srcPathList):
                         if currentBraceCount != 0:
                             braceStack.append(currentBraceCount)
                         currentBraceCount = 1
+                        classCount += 1
                     for ch in fileLine:
                         if ch == '{':
                             currentBraceCount += 1
@@ -145,7 +147,7 @@ def countMethods(srcPathList):
                                 if len(braceStack) != 0:
                                     currentBraceCount = braceStack.pop()
                 fileRelativePath = fileFullPath[len(srcPath):]
-                srcCountList.append((fileRelativePath, lineCount, methodCount))
+                srcCountList.append((fileRelativePath, lineCount, classCount, methodCount))
     return srcCountList
 
 def getReadableTime():
@@ -187,14 +189,17 @@ def process():
     # get configed resource
     srcCountList = countMethods(srcPathList)
     totalLineCount = 0
-    totalSrcCount = 0
-    for (srcFile, lineCount, srcCount) in srcCountList:
-        logContent.append('%s: %d %d' % (srcFile, lineCount, srcCount))
+    totalClassCount = 0
+    totalMethodCount = 0
+    for (srcFile, lineCount, classCount, methodCount) in srcCountList:
+        logContent.append('%s: %d %d %d' % (srcFile, lineCount, classCount, methodCount))
         totalLineCount += lineCount
-        totalSrcCount += srcCount
+        totalClassCount += classCount
+        totalMethodCount += methodCount
     logContent.append('Total File Count: %d' % len(srcCountList))
     logContent.append('Total Line Count: %d' % totalLineCount)
-    logContent.append('Total Method Count: %d' % totalSrcCount)
+    logContent.append('Total Class Count: %d' % totalClassCount)
+    logContent.append('Total Method Count: %d' % totalMethodCount)
 
 def saveToLog():
     logFile = 'AndroidMethodsCounter.log'
